@@ -1,35 +1,34 @@
-//return an object that contains the index of cakeType as key and num of cakes
-
 function maxDuffelBagValue(types, cap){
-  let result = 0;
+  //create an array where each index is the capacity between 0 and capacity
+  //return the max value of that array
+  let arr = [...new Array(cap + 1)].map((a) => { return 0; });
 
-  types.sort((a, b) => { //put max value to weight ratio first
-    const aRatio = Math.floor(a.value / a.weight);
-    const bRatio = Math.floor(b.value / b.weight);
-    if(aRatio === bRatio){
-      return a.weight - b.weight;
-    }
-    else {
-      return bRatio - aRatio;
-    }
-  }).forEach((type, i) => {
-    while(cap >= type.weight){
-      if(result[i]) result[i] += 1;
-      else result[i] = 1;
+  for(let i = 0; i < arr.length; i++){
+    let max = 0;
 
-      cap -= type.weight;
-      result += type.value;
-    }
-  });
+    for(let j = 0; j < types.length; j++){
+      //determine num of types[j] can fit into weight
+      let num = Math.floor(i / types[j].weight);
 
-  return result;
+      if(num > 0){
+        let remainder = cap % types[j].weight;
+        let total = num * types[j].value + arr[remainder];
+
+        max = (total > max) ? total : max;
+      }
+    }
+    arr[i] = max;
+  }
+
+  console.log(arr);
+  return arr[cap];
 }
 
 var cakeTypes = [
-  {weight: 1,  value: 30},
-  {weight: 50, value: 200}
+  {weight: 3, value: 40},
+  {weight: 5, value: 70}
 ];
 
-var capacity = 20;
+var capacity = 9;
 
-console.log(maxDuffelBagValue(cakeTypes, capacity));
+console.log(maxDuffelBagValue(cakeTypes, capacity)); //120
